@@ -10,8 +10,8 @@ export default class Evolution {
     this.starting_position = starting_pos;
     this.moves = moves;
     this.current_moves = 0;
-    this.fitness = null;
-    this.sorted_keys = [];
+    this.objects = [];
+    this.distance = [];
     this.width = width;
     this.height = height;
     this.ctx = ctx;
@@ -26,14 +26,15 @@ export default class Evolution {
     }
     Generation() {
         this.generational_winners = []
-        this.saved_balls = Math.round(this.number_of_balls - this.genetics_saved)
+        this.saved_balls = Math.round(this.number_of_balls * this.genetics_saved)
 
         console.log("Saving " + this.saved_balls + " Genetics")
         this.balls = new BallNet(this.number_of_balls, [this.starting_position[0], this.starting_position[1]],
             this.width, this.height, this.ctx, this.target, this.generation_num, this.moves, this.min_max_velocity);
-        for (let x = 0; x < this.saved_balls.length; x++) {
-            let current_ball = this.sorted_keys[x]
-
+        
+        for (let x = 0; x < this.saved_balls; x++) {
+            let current_ball = this.objects[x]
+            
             this.generational_winners.push(current_ball)
             if (current_ball.saved_moves.length < 1) {
                 current_ball.saved_moves = current_ball.generational_moves
@@ -41,7 +42,6 @@ export default class Evolution {
             }
         }
         this.Create_Children(this.number_of_balls - this.saved_balls)
-
         this.balls.ball_list = this.balls.ball_list.concat(this.generational_winners)
         console.log("Currently " + this.balls.ball_list.length + " balls in the array")
     }
@@ -49,28 +49,27 @@ export default class Evolution {
         let best_parents_saved = Math.round(this.best_parent * number_of_children)
         console.log("Generating Children: " + number_of_children)
         console.log("Generating Best Children: " + best_parents_saved)
-        console.log("Generating Normal Children: " + number_of_children - best_parents_saved)
+        let normal = number_of_children - best_parents_saved
+        console.log("Generating Normal Children: " + normal)
 
         for (let x=0; x<best_parents_saved; x++) {
             let past_moves = this.Mutation(this.generational_winners[0].saved_moves)
-            self.balls.create_ball(past_moves)
+
+            this.balls.create_ball(past_moves)
         }
-        for (let x=0; x<best_parents_saved; x++) {
-            let past_moves = this.Mutation(this.generational_winners[0].saved_moves)
+        for (let x=0; x<(number_of_children - best_parents_saved); x++) {
             this.balls.create_ball(this.Mutation(this.Crossover()))
         }
     }
     Crossover() {
-        let random_num1 = Math.random() * (this.generational_winners.length);
-        let random_num2 = Math.random() * (this.generational_winners.length);
-        let starting_velocities = this.generational_winners[random_num1].saved_moves.slice(0 , Math.round(this.moves / 2) + 1)
-        let ending_velocities = this.generational_winners[random_num2].saved_moves.slice(Math.round(this.moves / 2) + 1, )
-        return starting_velocities + ending_velocities
+        let random_num1 = Math.floor(Math.random() * (this.generational_winners.length));
+        let random_num2 = Math.floor(Math.random() * (this.generational_winners.length));
+        let starting_velocities = this.generational_winners[random_num1].saved_moves.slice(0 , Math.round(this.moves / 2))
+        let ending_velocities = this.generational_winners[random_num2].saved_moves.slice(Math.round(this.moves / 2), )
+        return starting_velocities.concat(ending_velocities)
     }
     Mutation(child) {
         let mutation_per = Math.round(this.moves * this.mutation_rate)
-        Array.from({length: mutation_per}, () => Math.round(Math.random() * (this.moves)))
-
         for (let x of Array.from({length: mutation_per}, () => Math.round(Math.random() * (this.moves)))) {
             child[x] = [Math.random() * (this.min_max_velocity + this.min_max_velocity) - this.min_max_velocity,
                 Math.random() * (this.min_max_velocity + this.min_max_velocity) - this.min_max_velocity]
@@ -80,8 +79,8 @@ export default class Evolution {
     Step(frozen, hidden) {
         if (this.balls.dead_count < this.number_of_balls && this.current_moves < this.moves) {
             let value_to_pass = 2 * this.moves
-            if (this.sorted_keys.length > 0) {
-                value_to_pass = this.fitness[this.sorted_keys[0]]
+            if (this.objects.length > 0) {
+                value_to_pass = this.objects[0]
             }
             if (this.balls.move(Math.round(this.generation_num), this.current_moves, value_to_pass, frozen, hidden) >= this.number_of_balls)
             {
@@ -94,11 +93,11 @@ export default class Evolution {
         
         else {
             let fitness_output = this.balls.fitness_function()
-            this.fitness = fitness_output[0]
-            this.sorted_keys = fitness_output[1]
-            console.log("Best Ball: " + this.fitness[this.sorted_keys[0]])
+            this.objects = fitness_output[0]
+            this.distance = fitness_output[1]
+            console.log("Best Ball: " + this.objects[0])
             this.balls.reset_pos()
-            Object.keys(this.fitness)[0] = true
+            this.objects[0].best_ball = true
             console.log("Generation complete")
             this.generation_num += 1
             this.balls.dead_count = 0

@@ -21,12 +21,11 @@ export default class BallNet {
     move(generation, move, best_score, frozen=false, hidden=false) {
         this.generation = generation;
         this.ctx.fillStyle = "rgb(18, 18, 18)";
-        console.log(this.width)
         this.ctx.fillRect(0, 0, this.width, this.height);
 
         this.ctx.fillStyle = WHITE;
         this.ctx.beginPath();
-        this.ctx.arc(this.target[0], this.target[1], 5, 0, 2 * Math.PI, false);
+        this.ctx.arc(this.target[0], this.target[1], 20, 0, 2 * Math.PI, false);
         this.ctx.fill();
 
         if (frozen) {
@@ -36,13 +35,13 @@ export default class BallNet {
         for (let current_ball of this.ball_list) {
             if (!current_ball.dead) {
                 if (0 < current_ball.saved_moves.length > move) {
+                    console.log("Using saved moves")
                     current_ball.pos_x += current_ball.saved_moves[move][0]
                     current_ball.pos_y += current_ball.saved_moves[move][1]
                 }
                 else {
                     this.velocity = [Math.random() * (this.min_max_velocity + this.min_max_velocity) - this.min_max_velocity,
                                      Math.random() * (this.min_max_velocity + this.min_max_velocity) - this.min_max_velocity]
-                    console.log(this.velocity)
                     current_ball.current_vector = this.velocity
                     current_ball.pos_x += this.velocity[0]
                     current_ball.pos_y += this.velocity[1]
@@ -75,7 +74,6 @@ export default class BallNet {
         }
     }
     reset_pos() {
-        let x = 0;
         for (let current_ball of this.ball_list) {
             current_ball.pos_x = this.start[0]
             current_ball.pos_y = this.start[1]
@@ -84,18 +82,20 @@ export default class BallNet {
         }
     }
     fitness_function() {
-        let distance_obj = Object.create(null)
+        let distance_obj = []
         for (let ball of this.ball_list) {
             if (!ball.dead) {
                 let distance = Math.pow((Math.pow(this.target[0] - ball.pos_x, 2) + (Math.pow(this.target[1] - ball.pos_y, 2))), 1/2)
-                distance_obj[ball] = Math.pow(distance, 5) + ball.move
+                distance_obj.push(Math.pow(distance, 5) + ball.move)
             }
             else {
-                distance_obj[ball] = Math.pow(this.width, 6)
+                distance_obj.push(Math.pow(this.width, 6))
             }
         }
-        let sorted_keys = Object.keys(distance_obj).sort(function (a,b){return distance_obj[a] - distance_obj[b]})
-        return [distance_obj, sorted_keys]
+        let sorted_lists = this.bubbleSort(distance_obj, this.ball_list)
+        distance_obj = sorted_lists[0]
+        let sorted_keys = sorted_lists[1]
+        return [sorted_keys, distance_obj]
     }
     create_net() {
         for (let x=0; x < this.number_of_balls; x++) {
@@ -104,7 +104,32 @@ export default class BallNet {
         console.log("Currently " + this.ball_list.length + " balls in the array")
     }
     create_ball(saved_moves) {
-        this.ball_list.append(new Ball(this.ctx, this.start[0], this.start[1],
+        this.ball_list.push(new Ball(this.ctx, this.start[0], this.start[1],
             ball_colours[this.generation % 6], saved_moves))
+        console.log("Made ball with moves " + saved_moves)
     }
+
+    bubbleSort(arr, arr1){
+        if (arr.length === arr1.length) {
+            //Outer pass
+            for (let i = 0; i < arr.length; i++) {
+
+                //Inner pass
+                for (let j = 0; j < arr.length - i - 1; j++) {
+
+                    //Value comparison using ascending order
+
+                    if (arr[j + 1] < arr[j]) {
+
+                        //Swapping
+                        [arr[j + 1], arr[j]] = [arr[j], arr[j + 1]];
+                        [arr1[j + 1], arr1[j]] = [arr1[j], arr1[j + 1]];
+
+                    }
+                }
+            }
+            return [arr, arr1];
+        }
+    };
+
 }
