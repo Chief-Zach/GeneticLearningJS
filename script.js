@@ -10,7 +10,7 @@ const ctx = canvas.getContext("2d");
 
 const number_of_balls = 1000
 const starting_moves = 500
-const min_max_velocity = 2
+const min_max_velocity = 5
 const target = [Math.floor(Math.random() * (width - 400) + 400),
                 Math.floor(Math.random() * (height))]
 // const target = [800, 100]
