@@ -45,7 +45,7 @@ export default class BallNet {
 
 
         if (best_score - this.total_moves <= 0 && best_score !== 0) {
-            this.ctx.strokeText(`Best Moves: ${best_score}`, 50, 122);
+            this.ctx.strokeText(`Best Moves: ${Math.floor(best_score)}`, 50, 122);
         }
         else {
             this.ctx.strokeText(`Best Moves: Unsolved`, 50, 122);
