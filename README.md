@@ -50,3 +50,7 @@ The fitness function is made up of the distance of the object of the target (in 
 it has taken the object to get to the target. For this function, it was chosen to raise the distance to the power of 5
 to prioritize getting closer to the target, before limiting moves. The result of the fitness function is stored in a
 hashmap with the object for future use.
+
+### Sources
+A thank you to [Helix](https://twitter.com/HelixDevx) and [Unshackled](https://twitter.com/sol_unshackled) for their JS 
+help!
