@@ -19,6 +19,7 @@ export default class Evolution {
     this.genetics_saved = genetics_saved/100;
     this.mutation_rate = mutation_rate/100;
     this.best_parent = best_parent/100;
+    this.countdown = 0
     this.min_max_velocity = min_max_velocity;
     this.balls = new BallNet(number_of_balls, [starting_pos[0], starting_pos[1]], width, height, ctx, target,
         this.generation_num, this.moves, this.min_max_velocity);
@@ -89,6 +90,15 @@ export default class Evolution {
             if (!frozen) {
                 this.current_moves += 1
             }
+            if (this.distance[0] <= this.moves && this.generation_num > 0) {
+                console.log(this.distance, this.moves)
+                this.countdown ++
+                if (this.countdown >= 5) {
+                    return false
+                }
+            }
+            return true
+
         }
         
         else {
@@ -103,6 +113,15 @@ export default class Evolution {
             this.balls.dead_count = 0
             this.current_moves = 0
             this.Generation()
+            if (this.distance[0] <= this.moves && this.generation_num > 0) {
+                console.log(this.distance, this.moves)
+                this.countdown ++
+                if (this.countdown >= 5) {
+                    return false
+                }
+            }
+            return true
+
         }
     }
 }

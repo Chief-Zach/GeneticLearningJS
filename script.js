@@ -11,8 +11,9 @@ const ctx = canvas.getContext("2d");
 const number_of_balls = 1000
 const starting_moves = 500
 const min_max_velocity = 5
-const target = [Math.floor(Math.random() * (width - 430) + 400),
-                Math.floor(Math.random() * (height - 60) + 30)]
+let target = [Math.floor(Math.random() * (width - 430) + 400),
+    Math.floor(Math.random() * (height - 60) + 30)]
+
 // const target = [800, 100]
 const generation_saved = 20
 const best_parent_saved = 10
@@ -21,10 +22,9 @@ const starting_x = width / 2
 const starting_y = height / 2
 
 let evolution = new Evolution(starting_moves, number_of_balls, [starting_x, starting_y], width, height,
-    ctx, target,
-    generation_saved, best_parent_saved, mutation_rate, min_max_velocity)
+    ctx, target, generation_saved, best_parent_saved, mutation_rate, min_max_velocity);
 
-function game_loop() {
+function game_loop(evolution) {
     ctx.fillStyle = "rgb(18, 18, 18)";
     ctx.fillRect(0, 0, width, height);
 
@@ -33,11 +33,20 @@ function game_loop() {
     // let freeze = false
 
 
+    console.log(evolution.Step(false, false))
+    if (!evolution.Step(false, false)) {
+        target = [Math.floor(Math.random() * (width - 430) + 400),
+            Math.floor(Math.random() * (height - 60) + 30)]
 
-    evolution.Step(false, false)
-    
-    requestAnimationFrame(game_loop)
+        evolution = new Evolution(starting_moves, number_of_balls, [starting_x, starting_y], width, height,
+            ctx, target, generation_saved, best_parent_saved, mutation_rate, min_max_velocity);
+    }
+
+    let test = () => {
+        game_loop(evolution)
+    }
+    requestAnimationFrame(test)
 
 }
 
-game_loop()
+game_loop(evolution)
