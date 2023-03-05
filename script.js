@@ -11,8 +11,9 @@ const ctx = canvas.getContext("2d");
 const number_of_balls = 1000
 const starting_moves = 500
 const min_max_velocity = 2
-// const target = [random.randrange(window_w), random.randrange(window_h)]
-const target = [800, 100]
+const target = [Math.floor(Math.random() * (width - 100) + 100),
+                Math.floor(Math.random() * (height))]
+// const target = [800, 100]
 const generation_saved = 20
 const best_parent_saved = 10
 const mutation_rate = 5
