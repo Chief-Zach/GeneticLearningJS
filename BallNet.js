@@ -28,17 +28,39 @@ export default class BallNet {
         this.ctx.arc(this.target[0], this.target[1], 20, 0, 2 * Math.PI, false);
         this.ctx.fill();
 
+        this.ctx.strokeStyle = "white";
+        this.ctx.lineWidth = 1;
+        this.ctx.font = "36px arial";
+        this.ctx.strokeText(`Generation: ${generation}`, 50, 50);
+
+        if (best_score <= this.total_moves) {
+            this.ctx.strokeText(`Best Score: 0`, 50, 86);
+        }
+        else if (generation === 0) {
+            this.ctx.strokeText(`Best Score: None`, 50, 86);
+        }
+        else if (best_score > this.total_moves) {
+            this.ctx.strokeText(`Best Score: ${Math.round(Math.pow(best_score - this.total_moves, 1/5))}`, 50, 86);
+        }
+
+
+        if (best_score - this.total_moves <= 0 && best_score !== 0) {
+            this.ctx.strokeText(`Best Moves: ${best_score}`, 50, 122);
+        }
+        else {
+            this.ctx.strokeText(`Best Moves: Unsolved`, 50, 122);
+        }
+
         if (frozen) {
             this.freeze_pos()
             return 0
         }
         for (let current_ball of this.ball_list) {
             if (!current_ball.dead) {
-                if (0 < current_ball.saved_moves.length > move) {
-                    console.log("Using saved moves")
-                    current_ball.pos_x += current_ball.saved_moves[move][0]
-                    current_ball.pos_y += current_ball.saved_moves[move][1]
-                }
+                if (generation > 0) {
+                    current_ball.pos_x += current_ball.saved_moves[move][0];
+                    current_ball.pos_y += current_ball.saved_moves[move][1];
+                } 
                 else {
                     this.velocity = [Math.random() * (this.min_max_velocity + this.min_max_velocity) - this.min_max_velocity,
                                      Math.random() * (this.min_max_velocity + this.min_max_velocity) - this.min_max_velocity]

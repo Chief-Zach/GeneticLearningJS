@@ -53,7 +53,7 @@ export default class Evolution {
         console.log("Generating Normal Children: " + normal)
 
         for (let x=0; x<best_parents_saved; x++) {
-            let past_moves = this.Mutation(this.generational_winners[0].saved_moves)
+            let past_moves = this.Mutation(this.generational_winners[0].saved_moves.slice())
 
             this.balls.create_ball(past_moves)
         }
@@ -80,7 +80,7 @@ export default class Evolution {
         if (this.balls.dead_count < this.number_of_balls && this.current_moves < this.moves) {
             let value_to_pass = 2 * this.moves
             if (this.objects.length > 0) {
-                value_to_pass = this.objects[0]
+                value_to_pass = this.distance[0]
             }
             if (this.balls.move(Math.round(this.generation_num), this.current_moves, value_to_pass, frozen, hidden) >= this.number_of_balls)
             {
