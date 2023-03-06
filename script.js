@@ -33,15 +33,12 @@ function game_loop(evolution) {
     // let freeze = false
 
 
-    console.log(evolution.Step(false, false))
     if (!evolution.Step(false, false)) {
         target = [Math.floor(Math.random() * (width - 430) + 400),
             Math.floor(Math.random() * (height - 60) + 30)]
-
         evolution = new Evolution(starting_moves, number_of_balls, [starting_x, starting_y], width, height,
             ctx, target, generation_saved, best_parent_saved, mutation_rate, min_max_velocity);
     }
-
     let test = () => {
         game_loop(evolution)
     }
