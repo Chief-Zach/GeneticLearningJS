@@ -91,7 +91,6 @@ export default class Evolution {
                 this.current_moves += 1
             }
             if (this.distance[0] <= this.moves && this.generation_num > 0) {
-                console.log(this.distance, this.moves)
                 this.countdown ++
                 if (this.countdown >= 5) {
                     return false
@@ -105,7 +104,6 @@ export default class Evolution {
             let fitness_output = this.balls.fitness_function()
             this.objects = fitness_output[0]
             this.distance = fitness_output[1]
-            console.log("Best Ball: " + this.objects[0])
             this.balls.reset_pos()
             this.objects[0].best_ball = true
             console.log("Generation complete")
