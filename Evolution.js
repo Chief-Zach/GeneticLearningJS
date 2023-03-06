@@ -112,7 +112,6 @@ export default class Evolution {
             this.current_moves = 0
             this.Generation()
             if (this.distance[0] <= this.moves && this.generation_num > 0) {
-                console.log(this.distance, this.moves)
                 this.countdown ++
                 if (this.countdown >= 5) {
                     return false
