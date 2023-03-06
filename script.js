@@ -34,6 +34,7 @@ function game_loop(evolution) {
 
 
     if (!evolution.Step(false, false)) {
+        console.log("Restarting")
         target = [Math.floor(Math.random() * (width - 430) + 400),
             Math.floor(Math.random() * (height - 60) + 30)]
         evolution = new Evolution(starting_moves, number_of_balls, [starting_x, starting_y], width, height,
