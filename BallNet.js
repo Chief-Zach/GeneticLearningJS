@@ -128,7 +128,6 @@ export default class BallNet {
     create_ball(saved_moves) {
         this.ball_list.push(new Ball(this.ctx, this.start[0], this.start[1],
             ball_colours[this.generation % 6], saved_moves))
-        console.log("Made ball with moves " + saved_moves)
     }
 
     bubbleSort(arr, arr1){
